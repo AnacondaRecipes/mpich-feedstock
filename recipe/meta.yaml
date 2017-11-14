@@ -10,20 +10,16 @@ source:
     sha256: 0778679a6b693d7b7caff37ff9d2856dc2bfc51318bf8373859bfa74253da3dc
 
 build:
-    number: 5
+    number: 6
     skip: True  # [win]
 
 requirements:
     build:
-        - gcc  # [not win]
-        - toolchain
-    run:
-        - libgcc  # [linux]
-        - libgfortran  # [osx]
+        - {{ compiler("c") }}
+        - {{ compiler("cxx") }}
+        - {{ compiler("fortran") }}
 
 test:
-    requires:
-        - gcc  # [not win]
     files:
         - tests/helloworld.c
         - tests/helloworld.cxx

@@ -1,11 +1,5 @@
 #!/bin/bash
 
-if [ $(uname) == Darwin ]; then
-    export LDFLAGS="$LDFLAGS -Wl,-rpath,$PREFIX/lib"
-fi
-
-export LIBRARY_PATH="$PREFIX/lib"
-
 ./configure --prefix=$PREFIX \
             --disable-dependency-tracking \
             --enable-cxx \
@@ -13,3 +7,8 @@ export LIBRARY_PATH="$PREFIX/lib"
 
 make
 make install
+
+if [[ $OSTYPE != darwin* ]]; then
+    cp $RECIPE_DIR/../check-glibc.sh .
+    bash check-glibc.sh $PREFIX/lib/ || exit 1
+fi
