@@ -5,7 +5,7 @@
             --enable-cxx \
             --enable-fortran
 
-make
+make -j$CPU_COUNT
 make install
 
 if [[ $OSTYPE != darwin* ]]; then
