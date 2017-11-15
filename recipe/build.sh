@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# since we are doing cross compilation
+# configure will fail
+
+export CROSS_F77_SIZEOF_INTEGER=4
+
 ./configure --prefix=$PREFIX \
             --disable-dependency-tracking \
             --enable-cxx \
