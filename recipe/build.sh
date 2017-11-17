@@ -8,7 +8,9 @@ export CROSS_F77_SIZEOF_INTEGER=4
 ./configure --prefix=$PREFIX \
             --disable-dependency-tracking \
             --enable-cxx \
-            --enable-fortran
+            --enable-f77 \
+            --enable-fc #\
+#            --with-cross=$RECIPE_DIR/cross.conf
 
 make -j$CPU_COUNT
 make install
