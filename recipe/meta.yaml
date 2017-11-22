@@ -18,8 +18,12 @@ requirements:
         - {{ compiler("c") }}
         - {{ compiler("cxx") }}
         - {{ compiler("fortran") }}
-
 test:
+    requires:
+        - {{ compiler("c") }}
+        - {{ compiler("cxx") }}
+        - {{ compiler("fortran") }}
+
     files:
         - tests/helloworld.c
         - tests/helloworld.cxx
