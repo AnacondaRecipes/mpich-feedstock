@@ -2,8 +2,11 @@
 
 # since we are doing cross compilation
 # configure will fail
+if [[ $OSTYPE == darwin* ]]; then
+    export LDFLAGS="$LDFLAGS -Wl,-rpath,${CONDA_PREFIX}/lib"
+fi
 
-export CROSS_F77_SIZEOF_INTEGER=4
+export FCFLAGS="$FFLAGS"
 
 ./configure --prefix=$PREFIX \
             --disable-dependency-tracking \
