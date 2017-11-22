@@ -1,25 +1,15 @@
 #!/bin/bash
 
-if [[ $OSTYPE == darwin* ]]; then
-    # this may need to be done on linux too,
-    # see https://github.com/ContinuumIO/anaconda-issues/issues/739
-    export LDFLAGS="$LDFLAGS -Wl,-rpath,${CONDA_PREFIX}/lib"
+if [ $(uname) == Darwin ]; then
+    export LDFLAGS="$LDFLAGS -Wl,-rpath,$PREFIX/lib"
 fi
 
-# don't know if this is useful.
-export FCFLAGS="$FFLAGS"
+export LIBRARY_PATH="$PREFIX/lib"
 
 ./configure --prefix=$PREFIX \
             --disable-dependency-tracking \
             --enable-cxx \
-            --enable-f77 \
-            --enable-fc #\
-#            --with-cross=$RECIPE_DIR/cross.conf
+            --enable-fortran
 
-make -j$CPU_COUNT
+make
 make install
-
-if [[ $OSTYPE != darwin* ]]; then
-    cp $RECIPE_DIR/../check-glibc.sh .
-    bash check-glibc.sh $PREFIX/lib/ || exit 1
-fi
