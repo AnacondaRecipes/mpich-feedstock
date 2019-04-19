@@ -1,21 +1,42 @@
+<<<<<<< HEAD
 # The language in this case has no bearing - we are going to be making use of "conda" for a
 # python distribution for the scientific python stack.
 language: c
+=======
+# This file was generated automatically from conda-smithy. To update this configuration,
+# update the conda-forge.yml and/or the recipe/meta.yaml.
+# -*- mode: yaml -*-
+>>>>>>> 6fafaa069755fcdbcdd760833f72e77b4f327619
 
 os:
   - linux
   - osx
 
+<<<<<<< HEAD
 osx_image: xcode6.4
 
 env:
     matrix:
         - PYTHON_VERSION=3.6
+=======
+os: osx
+osx_image: xcode9.4
+
+
+env:
+  matrix:
+    - CONFIG=osx_
+
+  global:
+    # The BINSTAR_TOKEN secure variable. This is defined canonically in conda-forge.yml.
+    - secure: "vJJpz8X04+qkbwBMm2Vzq+jZVRYLSll6l7BvE7BsjISLWXzqcHX4v0WghSi4JKs7ejDKABrd1GPBt2gGL9/nODQh7O2BxWt6lDzyJHg+gy/kufSNqmOpGOYKJw5twlh8ogynz2ZH/CYJe9+k961WAP6k6yHQtw5MWizF7M5e/dxdMPolFXQivz7i+Yj5gGZ0LfC/hNdwYX4jO/I9O1vLQX5K2vvl0uxbh3vLD9e4i3mL9K1kPmcJ8HMvLM8lKvjc/ZE0/3zCUtAuRGAvtEDJimpH0Iih3WFazXod8dZJw71gmxaiynHfv0dZDkIMDqs0VpLKbBdgcfyXlFT4nE6homAKL1XnvNCIbd9dEOYx7Rx72YmPy06tBHBYNEAjvY93lFIvSR2JhPoKRsfh+sfBXmDOBTHkYWrkBM07rvi7nXqx0aO+MLT40NLlJW83QNQ6Vwp1kZG73egwZcXPjbsL0K+AMVoWA/tFxVbWY87KYGui1sn4JropaPAiQSRUvUUt32HTMfUCgFAIVPMYR+JpOB5QaHttejGYlYCmOjrAGF9QEB0NltjX8L0y3O5/Q/dKjFv4V8LUODyLeLAFA/yoqa/KtGniriY7lOyiXPOPD52y+zaDugzSqc4rMLPYy/UVEpAdPEfK2H/x90mi6wRgUvmKEpLmgFEzIR/1pr+rPQY="
+>>>>>>> 6fafaa069755fcdbcdd760833f72e77b4f327619
 
     global:
         - TARGET_ARCH="x64"
         - CONDA_INSTALL_LOCN="${HOME}/miniconda"
 
+<<<<<<< HEAD
 install:
     # Install and set up miniconda.
     - if [ $TRAVIS_OS_NAME == "linux" ]; then wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh; fi
@@ -23,6 +44,13 @@ install:
     - bash miniconda.sh -b -p $CONDA_INSTALL_LOCN
     - export PATH=${CONDA_INSTALL_LOCN}/bin:$PATH
     - conda config --set always_yes true
+=======
+before_install:
+    # Fast finish the PR.
+    - |
+      (curl https://raw.githubusercontent.com/conda-forge/conda-forge-ci-setup-feedstock/master/recipe/conda_forge_ci_setup/ff_ci_pr_build.py | \
+          python - -v --ci "travis" "${TRAVIS_REPO_SLUG}" "${TRAVIS_BUILD_NUMBER}" "${TRAVIS_PULL_REQUEST}") || exit 1
+>>>>>>> 6fafaa069755fcdbcdd760833f72e77b4f327619
 
     # pin conda verson to 4.3.22
     #- conda config --set auto_update_conda False
@@ -30,6 +58,7 @@ install:
 
     - conda install --quiet conda
 
+<<<<<<< HEAD
     # latest conda build
     - conda install 'conda-build'
 
@@ -39,3 +68,35 @@ install:
 script:
     - |
        conda build recipe;
+=======
+install:
+    # Install Miniconda.
+    - |
+      echo ""
+      echo "Installing a fresh version of Miniconda."
+      MINICONDA_URL="https://repo.continuum.io/miniconda"
+      MINICONDA_FILE="Miniconda3-latest-MacOSX-x86_64.sh"
+      curl -L -O "${MINICONDA_URL}/${MINICONDA_FILE}"
+      bash $MINICONDA_FILE -b
+
+    # Configure conda.
+    - |
+      echo ""
+      echo "Configuring conda."
+      source /Users/travis/miniconda3/bin/activate root
+
+      conda install -n root -c conda-forge --quiet --yes conda-forge-ci-setup=2 conda-build
+      setup_conda_rc ./ ./recipe ./.ci_support/${CONFIG}.yaml
+
+      source run_conda_forge_build_setup
+
+    # compiler cleanup
+    - |
+      mangle_compiler ./ ./recipe ./.ci_support/${CONFIG}.yaml
+
+script:
+  # generate the build number clobber
+  - make_build_number ./ ./recipe ./.ci_support/${CONFIG}.yaml
+  -  conda build ./recipe -m ./.ci_support/${CONFIG}.yaml --clobber-file ./.ci_support/clobber_${CONFIG}.yaml
+  - upload_package ./ ./recipe ./.ci_support/${CONFIG}.yaml
+>>>>>>> 6fafaa069755fcdbcdd760833f72e77b4f327619
