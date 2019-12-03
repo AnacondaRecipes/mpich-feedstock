@@ -33,6 +33,8 @@ outputs:
     build:
       run_exports:
         - {{ pin_subpackage('mpich', max_pin='x.x') }}
+      missing_dso_whitelist:                                              # [osx]
+        - /System/Library/Frameworks/OpenCL.framework/Versions/A/OpenCL   # [osx]
     requirements:
       build:
         - {{ compiler('c') }}
