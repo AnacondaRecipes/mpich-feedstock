@@ -4,6 +4,8 @@
 # with a fatal deprecation message pointing to FC
 unset F90 F77
 
+#export FFLAGS="${FFLAGS} -fallow-argument-mismatch"
+
 export FCFLAGS="$FFLAGS"
 
 # avoid absolute-paths in compilers
@@ -32,8 +34,9 @@ unset FCFLAGS
 export CPPFLAGS="-I$PREFIX/include"
 export CFLAGS="-I$PREFIX/include"
 export CXXFLAGS="-I$PREFIX/include"
-export FFLAGS="-I$PREFIX/include"
-export FCFLAGS="-I$PREFIX/include"
+# We included the FFLAGS and FCFLAGS because we need the parameters also for the compilers
+export FFLAGS="-I$PREFIX/include -fallow-argument-mismatch"   
+export FCFLAGS="-I$PREFIX/include -fallow-argument-mismatch"  # try and see 
 export LDFLAGS="-L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
 
 export LIBRARY_PATH="$PREFIX/lib"
