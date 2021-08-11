@@ -40,7 +40,10 @@ outputs:
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}
-        - make  # [unix]
+        - make      # [unix]
+        - libtool   # [unix]
+        - automake  # [unix]
+        - autoconf  # [unix]
       host: []
       run:
         - mpi 1.0 mpich

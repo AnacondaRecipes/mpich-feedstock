@@ -1,3 +1,6 @@
 mpi_type:
   - external
   - conda
+# this hack is required for libtool on arm64, which doesn't know about 11.x deployment targets ...
+MACOSX_DEPLOYMENT_TARGET:  # [osx and arm64]
+  - 10.15                  # [osx and arm64]

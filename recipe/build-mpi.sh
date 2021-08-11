@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 # configure balks if F90 is defined
 # with a fatal deprecation message pointing to FC
 unset F90 F77
@@ -10,6 +12,14 @@ export FCFLAGS="$FFLAGS"
 export CC=$(basename "$CC")
 export CXX=$(basename "$CXX")
 export FC=$(basename "$FC")
+
+if [[ $target_platform == osx-arm64 ]]; then
+    list_config_to_patch=$(find . -name config.guess | sed -E 's/config.guess//')
+    for config_folder in $list_config_to_patch; do
+        echo "copying config to $config_folder ...\n"
+        cp -v $BUILD_PREFIX/share/libtool/build-aux/config.* $config_folder
+    done
+fi
 
 # avoid recording flags in compilers
 # See Compiler Flags section of MPICH readme
@@ -37,13 +47,22 @@ export FCFLAGS="-I$PREFIX/include"
 export LDFLAGS="-L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
 
 export LIBRARY_PATH="$PREFIX/lib"
+export MPICH_AUTOTOOLS_DIR="${BUILD_PREFIX}/bin"
+
+./autogen.sh
+
+if [[ $target_platform == osx-arm64 ]]; then
+  export FFLAGS="${FFLAGS} -fallow-argument-mismatch"
+fi
 
 ./configure --prefix=$PREFIX \
             --disable-dependency-tracking \
             --disable-libxml2 \
+            --enable-romio \
+            --enable-shared \
             --enable-cxx \
             --enable-fortran \
             --disable-wrapper-rpath
-
+ 
 make -j"${CPU_COUNT:-1}"
 make install
