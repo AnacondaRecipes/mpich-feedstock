@@ -21,6 +21,12 @@ if [[ $target_platform == osx-arm64 ]]; then
     done
 fi
 
+if [[ "$target_platform" == "linux-ppc64le" ]]; then
+    # Fix symbol relocation errors
+    export CFLAGS="$CFLAGS -fplt"
+    export CXXFLAGS="$CXXFLAGS -fplt"
+fi
+
 # avoid recording flags in compilers
 # See Compiler Flags section of MPICH readme
 # TODO: configure ignores MPICHLIB_LDFLAGS
@@ -62,7 +68,8 @@ fi
             --enable-shared \
             --enable-cxx \
             --enable-fortran \
-            --disable-wrapper-rpath
- 
+            --disable-wrapper-rpath \
+            || cat config.log
+
 make -j"${CPU_COUNT:-1}"
 make install
