@@ -53,6 +53,7 @@ outputs:
         - automake  # [unix]
         - autoconf  # [unix]
         - patch     # [unix]
+        - perl      # [unix]
       host: []
       run:
         - mpi 1.0 mpich
