@@ -14,8 +14,10 @@ export CXX=$(basename "$CXX")
 export FC=$(basename "$FC")
 
 if [[ $target_platform == osx-arm64 ]]; then
-    export LC_CTYPE="C.UTF-8"
-    export LC_ALL="C.UTF-8"
+    export LANGUAGE=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
+    export LANG=en_US.UTF-8
+    export LC_CTYPE=en_US.UTF-8
     
     list_config_to_patch=$(find . -name config.guess | sed -E 's/config.guess//')
     for config_folder in $list_config_to_patch; do
