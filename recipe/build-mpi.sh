@@ -14,6 +14,9 @@ export CXX=$(basename "$CXX")
 export FC=$(basename "$FC")
 
 if [[ $target_platform == osx-arm64 ]]; then
+    export LC_CTYPE="C.UTF-8"
+    export LC_ALL="C.UTF-8"
+    
     list_config_to_patch=$(find . -name config.guess | sed -E 's/config.guess//')
     for config_folder in $list_config_to_patch; do
         echo "copying config to $config_folder ...\n"
@@ -57,9 +60,10 @@ export MPICH_AUTOTOOLS_DIR="${BUILD_PREFIX}/bin"
 
 ./autogen.sh
 
-if [[ $target_platform == osx-arm64 ]]; then
-  export FFLAGS="${FFLAGS} -fallow-argument-mismatch"
-fi
+# Allow argument mismatch in Fortran
+# https://github.com/pmodels/mpich/issues/4300
+export FFLAGS="$FFLAGS -fallow-argument-mismatch"
+export FCFLAGS="$FCFLAGS -fallow-argument-mismatch"
 
 ./configure --prefix=$PREFIX \
             --disable-dependency-tracking \
@@ -68,8 +72,7 @@ fi
             --enable-shared \
             --enable-cxx \
             --enable-fortran \
-            --disable-wrapper-rpath \
-            || cat config.log
+            --disable-wrapper-rpath
 
 make -j"${CPU_COUNT:-1}"
 make install

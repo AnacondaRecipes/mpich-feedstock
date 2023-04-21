@@ -18,6 +18,7 @@ source:
   patches:
     - libfrabric-osx-lock.patch
     - libfrabric-osx-memsize.patch
+
 build:
   number: {{ build }}
   skip: True  # [win]
@@ -40,6 +41,8 @@ outputs:
     build:
       run_exports:
         - {{ pin_subpackage('mpich', max_pin='x') }}
+      missing_dso_whitelist:  # [linux and s390x]
+        - "$RPATH/ld64.so.1"  # [linux and s390x]
     requirements:
       build:
         - {{ compiler('c') }}
@@ -65,7 +68,7 @@ outputs:
         - echo 'ok'  # [not osx]
         # make CONDA_BUILD_SYSROOT a 'used variable'
         # so that conda-build knows to pass it to the test env
-        - echo "{{CONDA_BUILD_SYSROOT}}"  # [osx]
+        - echo "{{ CONDA_BUILD_SYSROOT }}"  # [osx]
     requirements:
       run:
         - {{ pin_subpackage('mpich', exact=True) }}
@@ -83,7 +86,7 @@ outputs:
         - echo 'ok'  # [not osx]
         # make CONDA_BUILD_SYSROOT a 'used variable'
         # so that conda-build knows to pass it to the test env
-        - echo "{{CONDA_BUILD_SYSROOT}}"  # [osx]
+        - echo "{{ CONDA_BUILD_SYSROOT }}"  # [osx]
     requirements:
       run:
         - {{ pin_subpackage('mpich', exact=True) }}
@@ -101,7 +104,7 @@ outputs:
         - echo 'ok'  # [not osx]
         # make CONDA_BUILD_SYSROOT a 'used variable'
         # so that conda-build knows to pass it to the test env
-        - echo "{{CONDA_BUILD_SYSROOT}}"  # [osx]
+        - echo "{{ CONDA_BUILD_SYSROOT }}"  # [osx]
     requirements:
       run:
         - {{ pin_subpackage('mpich', exact=True) }}
@@ -135,3 +138,6 @@ extra:
     - msarahan
     - ocefpaf
     - beckermr
+  skip-lints:
+    - compilers_must_be_in_build
+    - patch_must_be_in_build
