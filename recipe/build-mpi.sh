@@ -64,12 +64,12 @@ export LDFLAGS="-L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
 export LIBRARY_PATH="$PREFIX/lib"
 export MPICH_AUTOTOOLS_DIR="${BUILD_PREFIX}/bin"
 
-./autogen.sh
-
 # Allow argument mismatch in Fortran
 # https://github.com/pmodels/mpich/issues/4300
 export FFLAGS="$FFLAGS -fallow-argument-mismatch"
 export FCFLAGS="$FCFLAGS -fallow-argument-mismatch"
+
+./autogen.sh
 
 ./configure --prefix=$PREFIX \
             --disable-dependency-tracking \
