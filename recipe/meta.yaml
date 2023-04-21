@@ -49,6 +49,7 @@ outputs:
         - libtool   # [unix]
         - automake  # [unix]
         - autoconf  # [unix]
+        - patch     # [unix]
       host: []
       run:
         - mpi 1.0 mpich
