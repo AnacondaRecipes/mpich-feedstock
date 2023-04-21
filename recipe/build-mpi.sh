@@ -13,7 +13,7 @@ export CC=$(basename "$CC")
 export CXX=$(basename "$CXX")
 export FC=$(basename "$FC")
 
-if [[ $target_platform == "osx-*" ]]; then
+if [[ "$(uname)" == "Darwin" ]]; then
     # Fix perl locale settings on osx
     export LANGUAGE=en_US.UTF-8
     export LC_ALL=en_US.UTF-8
