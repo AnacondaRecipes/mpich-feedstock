@@ -13,11 +13,15 @@ export CC=$(basename "$CC")
 export CXX=$(basename "$CXX")
 export FC=$(basename "$FC")
 
-if [[ $target_platform == osx-arm64 ]]; then
+if [[ $target_platform == "osx-*" ]]; then
+    # Fix perl locale settings on osx
     export LANGUAGE=en_US.UTF-8
     export LC_ALL=en_US.UTF-8
     export LANG=en_US.UTF-8
     export LC_CTYPE=en_US.UTF-8
+fi
+
+if [[ $target_platform == osx-arm64 ]]; then
     
     list_config_to_patch=$(find . -name config.guess | sed -E 's/config.guess//')
     for config_folder in $list_config_to_patch; do
