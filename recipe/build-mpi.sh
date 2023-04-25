@@ -13,12 +13,27 @@ export CC=$(basename "$CC")
 export CXX=$(basename "$CXX")
 export FC=$(basename "$FC")
 
+if [[ "$(uname)" == "Darwin" ]]; then
+    # Fix perl locale settings on osx
+    export LANGUAGE=en_US.UTF-8
+    export LC_ALL=en_US.UTF-8
+    export LANG=en_US.UTF-8
+    export LC_CTYPE=en_US.UTF-8
+fi
+
 if [[ $target_platform == osx-arm64 ]]; then
+    
     list_config_to_patch=$(find . -name config.guess | sed -E 's/config.guess//')
     for config_folder in $list_config_to_patch; do
         echo "copying config to $config_folder ...\n"
         cp -v $BUILD_PREFIX/share/libtool/build-aux/config.* $config_folder
     done
+fi
+
+if [[ "$target_platform" == "linux-ppc64le" ]]; then
+    # Fix symbol relocation errors
+    export CFLAGS="$CFLAGS -fplt"
+    export CXXFLAGS="$CXXFLAGS -fplt"
 fi
 
 # avoid recording flags in compilers
@@ -49,11 +64,12 @@ export LDFLAGS="-L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
 export LIBRARY_PATH="$PREFIX/lib"
 export MPICH_AUTOTOOLS_DIR="${BUILD_PREFIX}/bin"
 
-./autogen.sh
+# Allow argument mismatch in Fortran
+# https://github.com/pmodels/mpich/issues/4300
+export FFLAGS="$FFLAGS -fallow-argument-mismatch"
+export FCFLAGS="$FCFLAGS -fallow-argument-mismatch"
 
-if [[ $target_platform == osx-arm64 ]]; then
-  export FFLAGS="${FFLAGS} -fallow-argument-mismatch"
-fi
+./autogen.sh
 
 ./configure --prefix=$PREFIX \
             --disable-dependency-tracking \
@@ -63,6 +79,6 @@ fi
             --enable-cxx \
             --enable-fortran \
             --disable-wrapper-rpath
- 
+
 make -j"${CPU_COUNT:-1}"
 make install
