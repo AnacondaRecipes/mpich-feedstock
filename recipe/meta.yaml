@@ -57,6 +57,8 @@ outputs:
       host: []
       run:
         - mpi 1.0 mpich
+        # lib/libmpifort.so.12.3.0 requires _openmp_mutex on linux
+        - _openmp_mutex  # [linux]
     test:
       script: run_test.sh
       files:
