@@ -1,4 +1,6 @@
 build_parameters:
+  # Disable --error-overlinking because of an error:
+  # `lib/libmpifort.so.12.3.0: but '_openmp_mutex' not in reqs/run`
   - ""
 
 upload_channels:
