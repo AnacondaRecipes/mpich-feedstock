@@ -52,7 +52,7 @@ outputs:
         - libtool   # [unix]
         - automake  # [unix]
         - autoconf  # [unix]
-        - patch     # [unix]
+        - patch     # [osx]
         - perl      # [unix]
       host: []
       run:
