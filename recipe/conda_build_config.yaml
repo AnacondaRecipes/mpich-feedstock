@@ -2,6 +2,7 @@ mpi_type:
   - external
   - conda
 
+# For fortran compatibility
 c_compiler_version:        # [osx]
   - 17                     # [osx]
 cxx_compiler_version:      # [osx]

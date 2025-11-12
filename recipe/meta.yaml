@@ -41,6 +41,10 @@ outputs:
     build:
       run_exports:
         - {{ pin_subpackage('mpich', max_pin='x') }}
+      missing_dso_whitelist:
+        # Known issue with gcc11/gcc14+ clash
+        # At this point cannot force gcc14+ due to fortran dependencies not cooperating
+        - lib/libstdc++.so.6
     requirements:
       build:
         - {{ stdlib('c') }}
