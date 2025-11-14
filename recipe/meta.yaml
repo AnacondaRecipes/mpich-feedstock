@@ -62,6 +62,8 @@ outputs:
         - mpi 1.0 mpich
         # lib/libmpifort.so.12.3.0 requires _openmp_mutex on linux
         - _openmp_mutex  # [linux]
+        - sysroot_linux-64 >=2.28  # [linux and x86_64]
+        - sysroot_linux-aarch64 >=2.28  # [linux and aarch64]
     test:
       script: run_test.sh
       files:
