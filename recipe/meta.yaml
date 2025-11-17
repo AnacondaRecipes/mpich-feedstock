@@ -15,9 +15,6 @@ package:
 source:
   url: https://www.mpich.org/static/downloads/{{ version_url }}/mpich-{{ version_url }}.tar.gz
   sha256: 47d774587a7156a53752218c811c852e70ac44db9c502dc3f399b4cb817e3818
-  # patches:                          # [osx]
-    # - libfrabric-osx-lock.patch     # [osx]
-    # - libfrabric-osx-memsize.patch  # [osx]
 
 build:
   number: {{ build }}
@@ -42,8 +39,6 @@ outputs:
       run_exports:
         - {{ pin_subpackage('mpich', max_pin='x') }}
       missing_dso_whitelist:
-        # Known issue with gcc11/gcc14+ clash
-        # At this point cannot force gcc14+ due to fortran dependencies not cooperating
         - lib/libstdc++.so.6
     requirements:
       build:
@@ -62,8 +57,6 @@ outputs:
         - mpi 1.0 mpich
         # lib/libmpifort.so.12.3.0 requires _openmp_mutex on linux
         - _openmp_mutex  # [linux]
-        # - sysroot_linux-64 >=2.28  # [linux and x86_64]
-        # - sysroot_linux-aarch64 >=2.28  # [linux and aarch64]
     test:
       script: run_test.sh
       files:
@@ -120,8 +113,9 @@ outputs:
         - {{ pin_subpackage('mpich', exact=True) }}
         - {{ compiler('fortran') }}
         - {{ stdlib('c') }}
-        # Newer clangs don't work with fortran FFLAGS set by conda activation script
-        - clang <18  # [osx]
+        # Force to use cbc's clang (17)
+        # Newer versions don't support flags set in FFLAGS by gfortran activation script
+        - {{ compiler('c') }}  # [osx]
     test:
       script: run_test.sh
       files:
