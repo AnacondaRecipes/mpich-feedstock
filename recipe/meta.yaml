@@ -120,6 +120,8 @@ outputs:
         - {{ pin_subpackage('mpich', exact=True) }}
         - {{ compiler('fortran') }}
         - {{ stdlib('c') }}
+        # Newer clangs don't work with fortran FFLAGS set by conda activation script
+        - clang <18  # [osx]
     test:
       script: run_test.sh
       files:
