@@ -1,4 +1,4 @@
-{% set version = "4.1.1" %}
+{% set version = "4.3.2" %}
 {% set build = 0 %}
 
 {% if version.rpartition(".")[2] == "0" %}
@@ -14,10 +14,7 @@ package:
 
 source:
   url: https://www.mpich.org/static/downloads/{{ version_url }}/mpich-{{ version_url }}.tar.gz
-  sha256: ee30471b35ef87f4c88f871a5e2ad3811cd9c4df32fd4f138443072ff4284ca2
-  patches:                          # [osx]
-    - libfrabric-osx-lock.patch     # [osx]
-    - libfrabric-osx-memsize.patch  # [osx]
+  sha256: 47d774587a7156a53752218c811c852e70ac44db9c502dc3f399b4cb817e3818
 
 build:
   number: {{ build }}
@@ -41,10 +38,11 @@ outputs:
     build:
       run_exports:
         - {{ pin_subpackage('mpich', max_pin='x') }}
-      missing_dso_whitelist:  # [linux and s390x]
-        - "$RPATH/ld64.so.1"  # [linux and s390x]
+      missing_dso_whitelist:
+        - lib/libstdc++.so.6
     requirements:
       build:
+        - {{ stdlib('c') }}
         - {{ compiler('c') }}
         - {{ compiler('cxx') }}
         - {{ compiler('fortran') }}
@@ -77,6 +75,7 @@ outputs:
         - {{ pin_subpackage('mpich', exact=True) }}
         # host C compilers work fine (better) on mac
         - {{ compiler('c') }}
+        - {{ stdlib('c') }}
     test:
       script: run_test.sh
       files:
@@ -95,6 +94,7 @@ outputs:
         - {{ pin_subpackage('mpich', exact=True) }}
         # host C compilers work fine (better) on mac
         - {{ compiler('cxx') }}
+        - {{ stdlib('c') }}
     test:
       script: run_test.sh
       files:
@@ -112,6 +112,10 @@ outputs:
       run:
         - {{ pin_subpackage('mpich', exact=True) }}
         - {{ compiler('fortran') }}
+        - {{ stdlib('c') }}
+        # Force to use cbc's clang (17)
+        # Newer versions don't support flags set in FFLAGS by gfortran activation script
+        - {{ compiler('c') }}  # [osx]
     test:
       script: run_test.sh
       files:
